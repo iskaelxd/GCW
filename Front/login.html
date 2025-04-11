@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciar Sesión - Mi Juego</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Logo -->
+  <img src="assets/final 1.png" alt="Logo" class="logo">
+  
+  <!-- Contenedor del formulario de inicio de sesión -->
+  <div class="form-container">
+    <h1 class="title">Iniciar Sesión</h1>
+    
+    <!-- Notar que no usamos action ni method para usar AJAX -->
+    <form id="loginForm">
+      <!-- Podrías permitir ingresar email o usuario en el mismo campo.
+           Para simplicidad lo llamamos "usuario" y lo validamos en el backend. -->
+      <input type="text" name="usuario" placeholder="Correo o Usuario" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit" class="button">Ingresar</button>
+    </form>
+    
+    <p class="switch-link">
+      ¿No tienes cuenta? <a href="registro.html">Regístrate</a>
+    </p>
+
+    <!-- Contenedor para mensaje de error o éxito -->
+    <div id="mensaje"></div>
+  </div>
+
+  <!-- Script de lógica AJAX -->
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event){
+      event.preventDefault(); // Evitamos que se recargue la página
+      
+      const form = event.target;
+      const usuario = form.usuario.value.trim();  // email o username
+      const password = form.password.value;
+
+      // Validación básica en front-end
+      if (usuario === '' || password === '') {
+        document.getElementById('mensaje').innerHTML = "<p style='color:red;'>Todos los campos son obligatorios.</p>";
+        return;
+      }
+
+      // Preparamos los datos
+      const formData = new FormData();
+      formData.append('usuario', usuario);
+      formData.append('password', password);
+
+      // Llamamos al backend (login.php) vía fetch
+      fetch('../Back/Controlador/login.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.exito) {
+          // Credenciales correctas
+          // Redirigimos a game.html (o donde quieras)
+          window.location.href = 'game.html';
+        } else {
+          // Credenciales inválidas
+          document.getElementById('mensaje').innerHTML = `<p style='color:red;'>${data.mensaje}</p>`;
+        }
+      })
+      .catch(error => {
+        console.error('Error en fetch:', error);
+        document.getElementById('mensaje').innerHTML = "<p style='color:red;'>Ocurrió un error al conectar con el servidor.</p>";
+      });
+    });
+  </script>
+</body>
+</html>
+<!-- Compare this snippet from Front/game.html: -->
+<!-- <!DOCTYPE html> -->

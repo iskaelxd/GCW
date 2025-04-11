@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zomvival - Pantalla de Juego</title>
+  <link rel="stylesheet" href="game.css" />
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200;1,200&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="game-container" id="gameContainer">
+    <!-- 🏁 Overlay Inicial (Centro Pantalla) -->
+    <div id="initialOverlay" class="initial-overlay">
+      <div class="menu">
+        <button class="menu-button" id="startGame">Empezar Juego</button>
+        <button class="menu-button" id="initialConfigButton">Configuración</button>
+      </div>
+    </div>
+
+    <!-- 🎮 Interfaz de Juego (oculta por defecto) -->
+    <div id="gameUI" class="game-ui hidden">
+      <div class="top-bar">
+        <button class="ui-button" id="configButton">Configuración</button>
+        <button class="ui-button" id="menuButton">Menu</button>
+      </div>
+      <div class="game-area">
+        <!-- Aquí va tu canvas o la lógica de tu juego -->
+      </div>
+      <div class="inventory-bar">
+        <div class="inventory-item">Espada</div>
+        <div class="inventory-item">Escudo</div>
+        <div class="inventory-item">Poción</div>
+        <div class="inventory-item">Mapa</div>
+      </div>
+    </div>
+    
+    <!-- 🛑 Menú de Pausa (3 opciones: Reanudar, Expandir, Salir) -->
+    <div id="pauseMenu" class="game-menu hidden">
+      <button class="ui-button" id="resumeGame">Reanudar</button>
+      <button class="ui-button" id="toggleFullscreen">Expandir</button>
+      <button class="ui-button" id="exitGame">Salir</button>
+    </div>
+
+    <!-- Overlay de Configuración (3 pasos con cards) -->
+    <div id="configOverlay" class="config-overlay hidden">
+      <!-- Paso 1: Seleccionar Nivel -->
+      <div id="levelStep" class="config-step">
+        <h2>Elige un Nivel</h2>
+        <div class="cards-container">
+          <div class="card" data-level="Ciudad en Ruinas">
+            <h3>Ciudad en Ruinas</h3>
+            <p>Calles destruidas y hordas por doquier.</p>
+          </div>
+          <div class="card" data-level="Bosque Tenebroso">
+            <h3>Bosque Tenebroso</h3>
+            <p>Niebla constante y poca visibilidad.</p>
+          </div>
+          <div class="card" data-level="Base Militar">
+            <h3>Base Militar</h3>
+            <p>Organización y fuego cruzado constante.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 2: Seleccionar Dificultad -->
+      <div id="difficultyStep" class="config-step hidden">
+        <h2>Elige la Dificultad</h2>
+        <div class="cards-container">
+          <div class="card" data-difficulty="Fácil">
+            <h3>Fácil</h3>
+            <p>Para sobrevivientes novatos.</p>
+          </div>
+          <div class="card" data-difficulty="Normal">
+            <h3>Normal</h3>
+            <p>Un buen reto para la mayoría.</p>
+          </div>
+          <div class="card" data-difficulty="Difícil">
+            <h3>Difícil</h3>
+            <p>Solo para valientes extremos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 3: Seleccionar Modo de Juego -->
+      <div id="modeStep" class="config-step hidden">
+        <h2>Elige el Modo de Juego</h2>
+        <div class="cards-container">
+          <div class="card" data-mode="Individual">
+            <h3>Individual</h3>
+            <p>Sobrevive por tu cuenta.</p>
+          </div>
+          <div class="card" data-mode="Multijugador">
+            <h3>Multijugador</h3>
+            <p>Forma equipo con otros jugadores.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archivo JS con la lógica -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  /* ========== ELEMENTOS PRINCIPALES ========== */
+  const gameContainer       = document.getElementById('gameContainer');
+  const initialOverlay      = document.getElementById('initialOverlay');
+  const gameUI              = document.getElementById('gameUI');
+
+  // Botones del Overlay Inicial
+  const startGameButton     = document.getElementById('startGame');
+  const initialConfigButton = document.getElementById('initialConfigButton');
+
+  // Botones de la Top-Bar (UI de Juego)
+  const configButton        = document.getElementById('configButton');
+  const menuButton          = document.getElementById('menuButton');
+
+  // Menú de Pausa
+  const pauseMenu           = document.getElementById('pauseMenu');
+  const resumeGame          = document.getElementById('resumeGame');
+  const exitGame            = document.getElementById('exitGame');
+  const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
+
+  // Overlay de configuración (3 pasos)
+  const configOverlay       = document.getElementById('configOverlay');
+  const levelStep           = document.getElementById('levelStep');
+  const difficultyStep      = document.getElementById('difficultyStep');
+  const modeStep            = document.getElementById('modeStep');
+
+  // Variables para almacenar la elección del jugador
+  let selectedLevel         = null;
+  let selectedDifficulty    = null;
+  let selectedMode          = null;
+  let isExpanded            = false;
+
+  /* ========== MOSTRAR INTERFAZ DE JUEGO ========== */
+  function showGameUI() {
+    initialOverlay.classList.add('hidden'); // Oculta botones centrales
+    gameUI.classList.remove('hidden');      // Muestra la UI
+  }
+
+  /* ========== BOTONES INICIALES ========== */
+  // "Empezar Juego"
+  startGameButton.addEventListener('click', () => {
+    // Muestra la UI y oculta overlay inicial
+    showGameUI();
+  });
+
+  // "Configuración" (en Overlay Inicial)
+  initialConfigButton.addEventListener('click', () => {
+    openConfigOverlay(); // Abre el paso 1 de la configuración
+  });
+
+  /* ========== BOTÓN CONFIG EN TOP-BAR (YA EN JUEGO) ========== */
+  configButton.addEventListener('click', () => {
+    openConfigOverlay();
+  });
+
+  /* ========== FUNCIÓN PARA ABRIR OVERLAY DE CONFIG ========== */
+  function openConfigOverlay() {
+    configOverlay.classList.remove('hidden');
+    // Mostramos el paso 1, ocultamos los demás
+    levelStep.classList.remove('hidden');
+    difficultyStep.classList.add('hidden');
+    modeStep.classList.add('hidden');
+
+    // Resetear (opcional) las variables
+    selectedLevel      = null;
+    selectedDifficulty = null;
+    selectedMode       = null;
+  }
+
+  /* ========== PASO 1: ELEGIR NIVEL ========== */
+  levelStep.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      selectedLevel = card.dataset.level;
+      // Pasar al paso 2
+      levelStep.classList.add('hidden');
+      difficultyStep.classList.remove('hidden');
+    });
+  });
+
+  /* ========== PASO 2: ELEGIR DIFICULTAD ========== */
+  difficultyStep.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      selectedDifficulty = card.dataset.difficulty;
+      // Pasar al paso 3
+      difficultyStep.classList.add('hidden');
+      modeStep.classList.remove('hidden');
+    });
+  });
+
+// Paso 3: Seleccionar Modo de Juego
+modeStep.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', () => {
+    selectedMode = card.dataset.mode;
+    console.log("Modo elegido:", selectedMode);
+
+    // Ocultar el contenedor del modo
+    modeStep.classList.add('hidden');
+
+    // Cerrar todo el overlay de configuración
+    configOverlay.classList.add('hidden');
+
+    // Mostrar la UI de juego (en caso de que no estuviera visible)
+    showGameUI();
+
+    // Aquí podrías iniciar la partida con la config elegida
+    alert(`Has elegido:\nNivel: ${selectedLevel}\nDificultad: ${selectedDifficulty}\nModo: ${selectedMode}`);
+  });
+});
+
+  /* ========== MENÚ DE PAUSA (3 OPCIONES) ========== */
+  // Botón "Menu" (esquina superior derecha)
+  menuButton.addEventListener('click', () => {
+    pauseMenu.classList.toggle('hidden');
+  });
+
+  // "Reanudar"
+  resumeGame.addEventListener('click', () => {
+    pauseMenu.classList.add('hidden');
+  });
+
+  // "Expandir" o "Reducir" Pantalla
+  toggleFullscreenBtn.addEventListener('click', () => {
+    isExpanded = !isExpanded;
+    if (isExpanded) {
+      gameContainer.classList.add('expanded');
+      toggleFullscreenBtn.textContent = 'Reducir';
+    } else {
+      gameContainer.classList.remove('expanded');
+      toggleFullscreenBtn.textContent = 'Expandir';
+    }
+  });
+
+  // "Salir" del Juego
+  exitGame.addEventListener('click', () => {
+    alert('Saliendo del juego...');
+    location.reload(); // Simulación de "Salir"
+  });
+});
+
+  </script>
+</body>
+</html>

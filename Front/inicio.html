@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faded Background</title>
+    <link rel="stylesheet" href="inicio.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+</head>
+<body>
+
+    <!-- Enlace "COMUNIDAD" en la esquina superior derecha -->
+    <a href="comunidad.html" class="comunidad-link">COMUNIDAD</a>
+
+    <img src="assets/final 1.png" alt="Logo" class="logo">
+
+    <div class="model-container">
+        <model-viewer 
+            src="assets/Zombie.glb" 
+            alt="Zombie 3D Model"
+            auto-rotate 
+            rotation-per-second="30deg"
+            camera-orbit="50deg 60deg 4m"
+            style="background-color: black;">
+        </model-viewer>
+    </div>
+
+    <div class="button-container">
+        <a class="button" href="login.html">INICIAR SESIÓN</a>
+        <a class="button" href="registro.html">REGISTRARSE</a>
+    </div>
+
+</body>
+</html>

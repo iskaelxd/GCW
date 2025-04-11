@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registrarse - Mi Juego</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Logo común -->
+  <img src="assets/final 1.png" alt="Logo" class="logo">
+  
+  <!-- Contenedor del formulario de registro -->
+  <div class="form-container">
+    <h1 class="title">Registrarse</h1>
+    <!-- Quitamos action y method para manejarlo con JS -->
+    <form id="registroForm">
+      <input type="text" name="username" placeholder="Nombre de Usuario" required>
+      <input type="email" name="email" placeholder="Correo Electrónico" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <input type="password" name="confirm_password" placeholder="Confirmar Contraseña" required>
+      <button type="submit" class="button">Registrarse</button>
+    </form>
+
+    <p class="switch-link">
+      ¿Ya tienes cuenta? <a href="login.html">Inicia Sesión</a>
+    </p>
+
+    <!-- Contenedor para mensajes de error o éxito -->
+    <div id="mensaje"></div>
+  </div>
+
+  <!-- JS para manejar el registro AJAX -->
+  <script>
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita el envío normal del formulario
+
+      // Obtenemos los valores de los campos
+      const username = event.target.username.value.trim();
+      const email = event.target.email.value.trim();
+      const password = event.target.password.value;
+      const confirmPassword = event.target.confirm_password.value;
+
+      // Validaciones básicas en front-end:
+      if (password.length < 5) {
+        document.getElementById('mensaje').innerHTML = "<p style='color:red;'>La contraseña debe tener al menos 5 caracteres.</p>";
+        return;
+      }
+      if (password !== confirmPassword) {
+        document.getElementById('mensaje').innerHTML = "<p style='color:red;'>Las contraseñas no coinciden.</p>";
+        return;
+      }
+
+      // Preparamos los datos para enviar vía fetch
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('email', email);
+      formData.append('password', password);
+
+      // Realizamos la solicitud AJAX (fetch) al archivo PHP del backend
+      fetch('../Back/Controlador/Usuario.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.exito) {
+          // Registro exitoso
+          document.getElementById('mensaje').innerHTML = `<p style='color:green;'>${data.mensaje}</p>`;
+          // Limpiar campos o redirigir si deseas
+          event.target.reset();
+        } else {
+          // Hubo un error
+          document.getElementById('mensaje').innerHTML = `<p style='color:red;'>${data.mensaje}</p>`;
+        }
+      })
+      .catch(error => {
+        console.error("Error en fetch:", error);
+        document.getElementById('mensaje').innerHTML = "<p style='color:red;'>Error al conectar con el servidor.</p>";
+      });
+    });
+  </script>
+</body>
+</html>

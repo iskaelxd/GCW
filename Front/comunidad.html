@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comunidad</title>
+  <!-- Usamos el mismo CSS para mantener coherencia -->
+  <link rel="stylesheet" href="inicio.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Barra superior con navegación de retorno -->
+  <header class="header-comunidad">
+    <a href="inicio.html" class="link-volver">VOLVER</a>
+    <h1 class="titulo-comunidad">COMUNIDAD</h1>
+  </header>
+
+  <!-- Contenedor principal del feed -->
+  <div class="container-comunidad">
+
+    <!-- Aquí irán las publicaciones traídas desde la API de la red social -->
+    <div class="feed">
+      <!-- Ejemplo de un post “falso” para ilustrar la estructura -->
+      <div class="post">
+        <div class="post-autor">Autor de Post</div>
+        <div class="post-contenido">
+          Aquí van los posts que traerás desde la API de Facebook.  
+          Podrías mostrar texto, imágenes, reacciones, etc.
+        </div>
+        <div class="post-fecha">Hace 2 horas</div>
+      </div>
+
+      <!-- Repite .post para cada publicación recibida de la API -->
+      <div class="post">
+        <div class="post-autor">Otra persona</div>
+        <div class="post-contenido">
+          Ejemplo de otro post, con fotos o texto adicional.
+        </div>
+        <div class="post-fecha">Ayer</div>
+      </div>
+    </div>
+
+    <!-- Sección para que el usuario publique o comente -->
+    <div class="comentario-section">
+      <h2>Agregar Comentario</h2>
+      <form class="comentario-form">
+        <textarea class="comentario-textarea" placeholder="Escribe tu comentario..."></textarea>
+        <button type="submit" class="button comentar-boton">Publicar</button>
+      </form>
+    </div>
+
+  </div>
+</body>
+</html>
