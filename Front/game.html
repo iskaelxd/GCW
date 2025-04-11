@@ -9,47 +9,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200;1,200&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200&display=swap"
     rel="stylesheet"
   />
 </head>
 <body>
   <div class="game-container" id="gameContainer">
-    <!-- 🏁 Overlay Inicial (Centro Pantalla) -->
-    <div id="initialOverlay" class="initial-overlay">
-      <div class="menu">
-        <button class="menu-button" id="startGame">Empezar Juego</button>
-        <button class="menu-button" id="initialConfigButton">Configuración</button>
-      </div>
+    <!-- OVERLAY INICIAL -->
+    <div id="startOverlay" class="initial-overlay">
+      <button class="menu-button" id="startGameBtn">Start Game</button>
     </div>
 
-    <!-- 🎮 Interfaz de Juego (oculta por defecto) -->
-    <div id="gameUI" class="game-ui hidden">
-      <div class="top-bar">
-        <button class="ui-button" id="configButton">Configuración</button>
-        <button class="ui-button" id="menuButton">Menu</button>
-      </div>
-      <div class="game-area">
-        <!-- Aquí va tu canvas o la lógica de tu juego -->
-      </div>
-      <div class="inventory-bar">
-        <div class="inventory-item">Espada</div>
-        <div class="inventory-item">Escudo</div>
-        <div class="inventory-item">Poción</div>
-        <div class="inventory-item">Mapa</div>
-      </div>
-    </div>
-    
-    <!-- 🛑 Menú de Pausa (3 opciones: Reanudar, Expandir, Salir) -->
-    <div id="pauseMenu" class="game-menu hidden">
-      <button class="ui-button" id="resumeGame">Reanudar</button>
+    <!-- Botones Esquina Superior -->
+    <div class="top-bar-left">
       <button class="ui-button" id="toggleFullscreen">Expandir</button>
-      <button class="ui-button" id="exitGame">Salir</button>
+    </div>
+    <div class="top-bar-right">
+      <button class="ui-button hidden" id="quickConfigBtn">Config. Rápida</button>
     </div>
 
-    <!-- Overlay de Configuración (3 pasos con cards) -->
+    <!-- Wizard de Config (3 pasos) -->
     <div id="configOverlay" class="config-overlay hidden">
-      <!-- Paso 1: Seleccionar Nivel -->
       <div id="levelStep" class="config-step">
         <h2>Elige un Nivel</h2>
         <div class="cards-container">
@@ -68,7 +48,6 @@
         </div>
       </div>
 
-      <!-- Paso 2: Seleccionar Dificultad -->
       <div id="difficultyStep" class="config-step hidden">
         <h2>Elige la Dificultad</h2>
         <div class="cards-container">
@@ -87,7 +66,6 @@
         </div>
       </div>
 
-      <!-- Paso 3: Seleccionar Modo de Juego -->
       <div id="modeStep" class="config-step hidden">
         <h2>Elige el Modo de Juego</h2>
         <div class="cards-container">
@@ -102,149 +80,498 @@
         </div>
       </div>
     </div>
+
+    <!-- UI del juego -->
+    <div id="gameUI" class="game-ui hidden">
+      <div class="inventory-bar">
+        <div class="inventory-item">Espada</div>
+        <div class="inventory-item">Escudo</div>
+        <div class="inventory-item">Poción</div>
+        <div class="inventory-item">Mapa</div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR CONFIG RÁPIDA -->
+    <div id="quickConfigSidebar" class="sidebar hidden">
+      <h2>Configuración Rápida</h2>
+      <label>
+        Nivel:
+        <select id="sidebarLevelSelect">
+          <option value="Ciudad en Ruinas">Ciudad en Ruinas</option>
+          <option value="Bosque Tenebroso">Bosque Tenebroso</option>
+          <option value="Base Militar">Base Militar</option>
+        </select>
+      </label>
+      <label>
+        Dificultad:
+        <select id="sidebarDifficultySelect">
+          <option value="Fácil">Fácil</option>
+          <option value="Normal">Normal</option>
+          <option value="Difícil">Difícil</option>
+        </select>
+      </label>
+      <label>
+        Modo:
+        <select id="sidebarModeSelect">
+          <option value="Individual">Individual</option>
+          <option value="Multijugador">Multijugador</option>
+        </select>
+      </label>
+      <button class="ui-button" id="saveSidebarConfig">Aplicar</button>
+      <button class="ui-button" id="closeSidebarConfig">Cerrar</button>
+    </div>
   </div>
 
-  <!-- Archivo JS con la lógica -->
+  <!-- Three.js desde un CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+  <!-- OBJLoader (para cargar .obj). Ej: importado desde un gist o un CDN con UMD -->
+  <!-- Si no encuentras un bundle UMD, deberás usar ES modules y un bundler. -->
+  <!-- EJEMPLO: <script src="jsm/OBJLoader.js"></script> 
+       O un link a <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/OBJLoader.js"></script> -->
+  <!-- 
+    * Ten en cuenta que a partir de three.js r150 se recomienda usar ES Modules.
+    * Este snippet ilustra el concepto, pero podrías necesitar un bundler (webpack/Vite) 
+      o una versión UMD del OBJLoader. 
+  -->
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-  /* ========== ELEMENTOS PRINCIPALES ========== */
-  const gameContainer       = document.getElementById('gameContainer');
-  const initialOverlay      = document.getElementById('initialOverlay');
-  const gameUI              = document.getElementById('gameUI');
+    // Variables globales
+    let isExpanded    = false;
+    let hasConfigured = false;
 
-  // Botones del Overlay Inicial
-  const startGameButton     = document.getElementById('startGame');
-  const initialConfigButton = document.getElementById('initialConfigButton');
+    let selectedLevel      = null;
+    let selectedDifficulty = null;
+    let selectedMode       = null;
 
-  // Botones de la Top-Bar (UI de Juego)
-  const configButton        = document.getElementById('configButton');
-  const menuButton          = document.getElementById('menuButton');
+    let scene, camera, renderer;
+    let scenarioGroup;
+    let cube;
+    const keys = {};
 
-  // Menú de Pausa
-  const pauseMenu           = document.getElementById('pauseMenu');
-  const resumeGame          = document.getElementById('resumeGame');
-  const exitGame            = document.getElementById('exitGame');
-  const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
+    let clock;
 
-  // Overlay de configuración (3 pasos)
-  const configOverlay       = document.getElementById('configOverlay');
-  const levelStep           = document.getElementById('levelStep');
-  const difficultyStep      = document.getElementById('difficultyStep');
-  const modeStep            = document.getElementById('modeStep');
+    document.addEventListener("DOMContentLoaded", () => {
+      const gameContainer       = document.getElementById("gameContainer");
+      const startOverlay        = document.getElementById("startOverlay");
+      const configOverlay       = document.getElementById("configOverlay");
+      const gameUI              = document.getElementById("gameUI");
+      const quickConfigSidebar  = document.getElementById("quickConfigSidebar");
 
-  // Variables para almacenar la elección del jugador
-  let selectedLevel         = null;
-  let selectedDifficulty    = null;
-  let selectedMode          = null;
-  let isExpanded            = false;
+      const startGameBtn        = document.getElementById("startGameBtn");
+      const toggleFullscreen    = document.getElementById("toggleFullscreen");
+      const quickConfigBtn      = document.getElementById("quickConfigBtn");
 
-  /* ========== MOSTRAR INTERFAZ DE JUEGO ========== */
-  function showGameUI() {
-    initialOverlay.classList.add('hidden'); // Oculta botones centrales
-    gameUI.classList.remove('hidden');      // Muestra la UI
-  }
+      const levelStep           = document.getElementById("levelStep");
+      const difficultyStep      = document.getElementById("difficultyStep");
+      const modeStep            = document.getElementById("modeStep");
 
-  /* ========== BOTONES INICIALES ========== */
-  // "Empezar Juego"
-  startGameButton.addEventListener('click', () => {
-    // Muestra la UI y oculta overlay inicial
-    showGameUI();
-  });
+      const sidebarLevelSelect      = document.getElementById("sidebarLevelSelect");
+      const sidebarDifficultySelect = document.getElementById("sidebarDifficultySelect");
+      const sidebarModeSelect       = document.getElementById("sidebarModeSelect");
+      const saveSidebarConfig       = document.getElementById("saveSidebarConfig");
+      const closeSidebarConfig      = document.getElementById("closeSidebarConfig");
 
-  // "Configuración" (en Overlay Inicial)
-  initialConfigButton.addEventListener('click', () => {
-    openConfigOverlay(); // Abre el paso 1 de la configuración
-  });
+      // Leer config localStorage
+      const savedConfig = localStorage.getItem("gameConfig");
+      if (savedConfig) {
+        const configObj = JSON.parse(savedConfig);
+        selectedLevel      = configObj.level;
+        selectedDifficulty = configObj.difficulty;
+        selectedMode       = configObj.mode;
+        hasConfigured      = true;
+        quickConfigBtn.classList.remove("hidden");
+      }
 
-  /* ========== BOTÓN CONFIG EN TOP-BAR (YA EN JUEGO) ========== */
-  configButton.addEventListener('click', () => {
-    openConfigOverlay();
-  });
+      initThreeScene();
+      if (selectedLevel) loadCurrentLevel();
 
-  /* ========== FUNCIÓN PARA ABRIR OVERLAY DE CONFIG ========== */
-  function openConfigOverlay() {
-    configOverlay.classList.remove('hidden');
-    // Mostramos el paso 1, ocultamos los demás
-    levelStep.classList.remove('hidden');
-    difficultyStep.classList.add('hidden');
-    modeStep.classList.add('hidden');
+      // Botón Start
+      startGameBtn.addEventListener("click", () => {
+        if (!hasConfigured) {
+          startOverlay.classList.add("hidden");
+          openConfigOverlay();
+        } else {
+          startOverlay.classList.add("hidden");
+          gameUI.classList.remove("hidden");
+          loadCurrentLevel();
+        }
+      });
 
-    // Resetear (opcional) las variables
-    selectedLevel      = null;
-    selectedDifficulty = null;
-    selectedMode       = null;
-  }
+      // Expandir
+      toggleFullscreen.addEventListener("click", () => {
+        isExpanded = !isExpanded;
+        if (isExpanded) {
+          gameContainer.classList.add("expanded");
+          toggleFullscreen.textContent = "Reducir";
+        } else {
+          gameContainer.classList.remove("expanded");
+          toggleFullscreen.textContent = "Expandir";
+        }
+      });
+      gameContainer.addEventListener('transitionend', handleResize);
 
-  /* ========== PASO 1: ELEGIR NIVEL ========== */
-  levelStep.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      selectedLevel = card.dataset.level;
-      // Pasar al paso 2
-      levelStep.classList.add('hidden');
-      difficultyStep.classList.remove('hidden');
-    });
-  });
+      function openConfigOverlay() {
+        configOverlay.classList.remove("hidden");
+        levelStep.classList.remove("hidden");
+        difficultyStep.classList.add("hidden");
+        modeStep.classList.add("hidden");
+      }
 
-  /* ========== PASO 2: ELEGIR DIFICULTAD ========== */
-  difficultyStep.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      selectedDifficulty = card.dataset.difficulty;
-      // Pasar al paso 3
-      difficultyStep.classList.add('hidden');
-      modeStep.classList.remove('hidden');
-    });
-  });
+      levelStep.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          selectedLevel = card.dataset.level;
+          levelStep.classList.add("hidden");
+          difficultyStep.classList.remove("hidden");
+        });
+      });
+      difficultyStep.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          selectedDifficulty = card.dataset.difficulty;
+          difficultyStep.classList.add("hidden");
+          modeStep.classList.remove("hidden");
+        });
+      });
+      modeStep.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          selectedMode = card.dataset.mode;
+          hasConfigured = true;
+          configOverlay.classList.add("hidden");
+          startOverlay.classList.remove("hidden");
+          quickConfigBtn.classList.remove("hidden");
+          saveConfig();
+          alert("Configuración Completa\n" +
+                "Nivel: " + selectedLevel + "\n" +
+                "Dificultad: " + selectedDifficulty + "\n" +
+                "Modo: " + selectedMode);
+        });
+      });
 
-// Paso 3: Seleccionar Modo de Juego
-modeStep.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('click', () => {
-    selectedMode = card.dataset.mode;
-    console.log("Modo elegido:", selectedMode);
+      function saveConfig() {
+        const data = { level: selectedLevel, difficulty: selectedDifficulty, mode: selectedMode };
+        localStorage.setItem("gameConfig", JSON.stringify(data));
+      }
 
-    // Ocultar el contenedor del modo
-    modeStep.classList.add('hidden');
+      // Config Rápida
+      quickConfigBtn.addEventListener("click", () => {
+        quickConfigSidebar.classList.remove("hidden");
+        sidebarLevelSelect.value      = selectedLevel      || "Ciudad en Ruinas";
+        sidebarDifficultySelect.value = selectedDifficulty || "Fácil";
+        sidebarModeSelect.value       = selectedMode       || "Individual";
+      });
+      saveSidebarConfig.addEventListener("click", () => {
+        selectedLevel      = sidebarLevelSelect.value;
+        selectedDifficulty = sidebarDifficultySelect.value;
+        selectedMode       = sidebarModeSelect.value;
+        saveConfig();
+        alert("Nueva Configuración Aplicada\n" +
+              "Nivel: " + selectedLevel + "\n" +
+              "Dificultad: " + selectedDifficulty + "\n" +
+              "Modo: " + selectedMode);
+        quickConfigSidebar.classList.add("hidden");
+        loadCurrentLevel();
+      });
+      closeSidebarConfig.addEventListener("click", () => {
+        quickConfigSidebar.classList.add("hidden");
+      });
 
-    // Cerrar todo el overlay de configuración
-    configOverlay.classList.add('hidden');
+      function initThreeScene() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb);
 
-    // Mostrar la UI de juego (en caso de que no estuviera visible)
-    showGameUI();
+        const w = gameContainer.clientWidth;
+        const h = gameContainer.clientHeight;
+        camera = new THREE.PerspectiveCamera(75, w/h, 0.1, 1000);
+        camera.position.set(0, 3, 8);
 
-    // Aquí podrías iniciar la partida con la config elegida
-    alert(`Has elegido:\nNivel: ${selectedLevel}\nDificultad: ${selectedDifficulty}\nModo: ${selectedMode}`);
-  });
-});
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(w, h);
+        gameContainer.appendChild(renderer.domElement);
 
-  /* ========== MENÚ DE PAUSA (3 OPCIONES) ========== */
-  // Botón "Menu" (esquina superior derecha)
-  menuButton.addEventListener('click', () => {
-    pauseMenu.classList.toggle('hidden');
-  });
+        // Cubo rojo
+        const geo = new THREE.BoxGeometry();
+        const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        cube = new THREE.Mesh(geo, mat);
+        cube.position.set(-4, 1.5, 0);
+        scene.add(cube);
 
-  // "Reanudar"
-  resumeGame.addEventListener('click', () => {
-    pauseMenu.classList.add('hidden');
-  });
+        // Teclas
+        document.addEventListener("keydown", e => { keys[e.code] = true; });
+        document.addEventListener("keyup", e => { keys[e.code] = false; });
 
-  // "Expandir" o "Reducir" Pantalla
-  toggleFullscreenBtn.addEventListener('click', () => {
-    isExpanded = !isExpanded;
-    if (isExpanded) {
-      gameContainer.classList.add('expanded');
-      toggleFullscreenBtn.textContent = 'Reducir';
-    } else {
-      gameContainer.classList.remove('expanded');
-      toggleFullscreenBtn.textContent = 'Expandir';
+        clock = new THREE.Clock();
+        animate();
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        // Rotación continua del cubo
+        cube.rotation.x += 0.005;
+        cube.rotation.y += 0.005;
+
+        // Actualizar cámara
+        updateCamera(delta);
+
+        renderer.render(scene, camera);
+      }
+
+      // Teclas: W,A,S,D = mover, Q,E = girar
+      function updateCamera(delta) {
+        const moveSpeed = 10;   
+        const rotateSpeed = 1.5;
+
+        // W,S (avance/retroceso)
+        if (keys["KeyW"]) camera.translateZ(-moveSpeed * delta);
+        if (keys["KeyS"]) camera.translateZ(moveSpeed * delta);
+
+        // A,D (lateral)
+        if (keys["KeyA"]) camera.translateX(-moveSpeed * delta);
+        if (keys["KeyD"]) camera.translateX(moveSpeed * delta);
+
+        // Q,E (girar izquierda/derecha)
+        if (keys["KeyQ"]) camera.rotation.y += rotateSpeed * delta;
+        if (keys["KeyE"]) camera.rotation.y -= rotateSpeed * delta;
+      }
+
+      function handleResize() {
+        const w = gameContainer.clientWidth;
+        const h = gameContainer.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+
+      // =========================================
+      // CARGA DE ESCENARIOS
+      // =========================================
+      function loadCurrentLevel() {
+        if (scenarioGroup) {
+          scene.remove(scenarioGroup);
+          scenarioGroup = null;
+        }
+        scenarioGroup = new THREE.Group();
+        scene.fog = null;
+
+        if (selectedLevel === "Bosque Tenebroso") {
+          loadBosqueTenebroso();
+          // Ejemplo: loadOBJModel('models/bosque_obj.obj');
+        } else if (selectedLevel === "Base Militar") {
+          loadBaseMilitar();
+          // Ejemplo: loadOBJModel('models/base_militar.obj');
+        } else {
+          loadCiudadEnRuinas();
+          // Ejemplo: loadOBJModel('models/ciudad_ruinas.obj');
+        }
+        scene.add(scenarioGroup);
+      }
+
+      function loadCiudadEnRuinas() {
+        const groundGeo = new THREE.PlaneGeometry(40, 40);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        scenarioGroup.add(ground);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 10, 5);
+        scenarioGroup.add(dirLight);
+
+        for (let i = 0; i < 6; i++) {
+          const buildingGeo = new THREE.BoxGeometry(3, Math.random()*5+5, 3);
+          const buildingMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
+          const building = new THREE.Mesh(buildingGeo, buildingMat);
+          building.position.set(
+            (Math.random()-0.5)*25,
+            buildingGeo.parameters.height/2,
+            (Math.random()-0.5)*25
+          );
+          scenarioGroup.add(building);
+        }
+      }
+
+      function loadBosqueTenebroso() {
+        scene.fog = new THREE.Fog(0x000000, 5, 30);
+
+        const groundGeo = new THREE.PlaneGeometry(40, 40);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x003300 });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        scenarioGroup.add(ground);
+
+        for (let i = 0; i < 10; i++) {
+          const troncoGeo = new THREE.CylinderGeometry(0.2, 0.5, 3);
+          const troncoMat = new THREE.MeshStandardMaterial({ color: 0x654321 });
+          const tronco = new THREE.Mesh(troncoGeo, troncoMat);
+
+          const copaGeo = new THREE.SphereGeometry(1.2, 8, 8);
+          const copaMat = new THREE.MeshStandardMaterial({ color: 0x002200 });
+          const copa = new THREE.Mesh(copaGeo, copaMat);
+          copa.position.y = 2.2;
+
+          const arbol = new THREE.Group();
+          arbol.add(tronco);
+          arbol.add(copa);
+
+          arbol.position.x = (Math.random()-0.5)*25;
+          arbol.position.z = (Math.random()-0.5)*25;
+          arbol.position.y = 1.5;
+
+          scenarioGroup.add(arbol);
+        }
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scenarioGroup.add(ambLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        dirLight.position.set(10, 10, 5);
+        scenarioGroup.add(dirLight);
+      }
+
+      function loadBaseMilitar() {
+        const groundGeo = new THREE.PlaneGeometry(40, 40);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x556655 });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        scenarioGroup.add(ground);
+
+        const wallGeo = new THREE.BoxGeometry(40, 2, 0.5);
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
+
+        const wall1 = new THREE.Mesh(wallGeo, wallMat);
+        wall1.position.set(0, 1, 20);
+        scenarioGroup.add(wall1);
+
+        const wall2 = wall1.clone();
+        wall2.position.set(0, 1, -20);
+        scenarioGroup.add(wall2);
+
+        const wallSideGeo = new THREE.BoxGeometry(40, 2, 0.5);
+        const wallSide1 = new THREE.Mesh(wallSideGeo, wallMat);
+        wallSide1.rotation.y = Math.PI/2;
+        wallSide1.position.set(20, 1, 0);
+        scenarioGroup.add(wallSide1);
+
+        const wallSide2 = wallSide1.clone();
+        wallSide2.position.set(-20, 1, 0);
+        scenarioGroup.add(wallSide2);
+
+        for (let i=0; i<4; i++){
+          const contGeo = new THREE.BoxGeometry(3, 2, 2);
+          const contMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+          const cont = new THREE.Mesh(contGeo, contMat);
+          cont.position.set(
+            -10 + i*4,
+            1,
+            Math.random()*6 - 3
+          );
+          scenarioGroup.add(cont);
+        }
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scenarioGroup.add(ambLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        dirLight.position.set(10, 10, 5);
+        scenarioGroup.add(dirLight);
+      }
+
+
+      // =========================================
+      // EJEMPLO DE CÓMO CARGAR .OBJ 
+      // =========================================
+      /*
+        Aquí te mostramos una función loadOBJModel(path)
+        para cargar un .OBJ y añadirlo a scenarioGroup. 
+        Esto se usaría en "loadCurrentLevel()" 
+        cuando sea el escenario correspondiente.
+
+        Nota: Necesitas OBJLoader, y su import:
+          import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+        o un script UMD que contenga OBJLoader.
+
+        function loadOBJModel(path) {
+          const objLoader = new THREE.OBJLoader();
+          objLoader.load(
+            path,
+            (obj) => {
+              // obj es un THREE.Group con la geometría
+              // Ajusta escala, posición, etc. si hace falta
+              obj.scale.set(0.1, 0.1, 0.1);
+              obj.position.set(0, 0, 0);
+
+              // Añadirlo al scenarioGroup
+              scenarioGroup.add(obj);
+            },
+            (xhr) => {
+              console.log((xhr.loaded / xhr.total * 100) + '% cargado de ' + path);
+            },
+            (error) => {
+              console.error('Error cargando OBJ:', error);
+            }
+          );
+        }
+
+        // Podrías llamarlo en loadBaseMilitar, p.ej.:
+        // function loadBaseMilitar() {
+        //   ...
+        //   loadOBJModel('models/base_militar.obj');
+        // }
+      */
+      // =========================================
+
+
+      //O SE PUEDE USAR 
+      /*
+  EJEMPLO DE CÓMO CARGAR MÚLTIPLES MODELOS .OBJ
+  Y COLOCARLOS EN DIFERENTES PARTES DEL MAPA
+*/
+
+// Suponiendo que ya tienes un OBJLoader inicializado (y un script UMD o ES Module):
+// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+
+// Supongamos que definimos esta función:
+      /* 
+      function loadOBJModel(path, position, scale) {
+  const objLoader = new THREE.OBJLoader();
+
+  // Cargar el archivo .OBJ
+  objLoader.load(
+    path,
+    (obj) => {
+      // Ajustar posición, escala, etc.
+      if (position) {
+        obj.position.set(position.x || 0, position.y || 0, position.z || 0);
+      }
+      if (scale) {
+        obj.scale.set(scale.x || 1, scale.y || 1, scale.z || 1);
+      }
+
+      // Agregar al grupo (scenarioGroup) para este escenario
+      // Asegúrate de que scenarioGroup ya exista o hayas creado uno
+      scenarioGroup.add(obj);
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total * 100) + '% cargado de ' + path);
+    },
+    (error) => {
+      console.error('Error cargando OBJ:', error);
     }
-  });
+  );
+}
 
-  // "Salir" del Juego
-  exitGame.addEventListener('click', () => {
-    alert('Saliendo del juego...');
-    location.reload(); // Simulación de "Salir"
-  });
-});
+//Y ASI LO CARGARIAMOS 
 
+
+  loadOBJModel(
+    'models/contenedor.obj',   // ruta del archivo
+    { x: -5, y: 0, z: 2 },     // posición
+    { x: 0.05, y: 0.05, z: 0.05 } // escala
+  );
+
+
+
+      */
+
+    });
   </script>
 </body>
 </html>
