@@ -326,3 +326,56 @@ body {
 .comentar-boton:hover::before {
   animation: borderAnimation 1.5s linear forwards;
 }
+/* ---------- Comentarios ---------- */
+.btn-coment {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #1e90ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-coment:hover { text-decoration: underline; }
+
+.comments-container.oculto { display: none; }
+.comment {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #3a3a3a;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.comment b { color: #fff; }
+.comment small { color:#bbb; font-size:12px; }
+
+
+/* ---------- Crear publicación ---------- */
+.create-card { background:#242424; }
+.create-text{
+  width:100%; resize:none; background:#333; color:#eee;
+  border:none; border-radius:6px; padding:10px; margin-bottom:10px;
+  font-family:inherit; font-size:16px;
+}
+.img-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+.img-btn{
+  background:#3d3d3d; color:#1e90ff; border:none;
+  padding:6px 12px; border-radius:6px; cursor:pointer; font-size:14px;
+}
+#urlImg{
+  flex:1 1 200px; min-width:160px;
+  background:#333; color:#ccc; border:none; border-radius:6px; padding:6px;
+}
+.post-btn{
+  margin-top:10px; background:#1e90ff; color:#fff; border:none;
+  padding:8px 18px; border-radius:6px; cursor:pointer; font-size:16px;
+}
+.post-btn:hover{ opacity:.9 }
+/* ---------- Ajuste de ancho para "Crear publicación" ---------- */
+.create-card{
+  /* Igual que .feed */
+  max-width:640px;      /* mismo límite que los posts */
+  margin:32px auto;     /* centrado y mismo espacio superior/inf. */
+  width:100%;           /* permite reducir con pantallas pequeñas */
+}
