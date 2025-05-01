@@ -14,6 +14,11 @@
   />
 </head>
 <body>
+  <header class="main-header">
+    <h1>Zomvival</h1>
+    <button id="comunidadBtn">Ir a Comunidad</button>
+  </header>
+  
   <div class="game-container" id="gameContainer">
     <!-- OVERLAY INICIAL -->
     <div id="startOverlay" class="initial-overlay">
@@ -474,104 +479,12 @@
         scenarioGroup.add(dirLight);
       }
 
-
-      // =========================================
-      // EJEMPLO DE CÓMO CARGAR .OBJ 
-      // =========================================
-      /*
-        Aquí te mostramos una función loadOBJModel(path)
-        para cargar un .OBJ y añadirlo a scenarioGroup. 
-        Esto se usaría en "loadCurrentLevel()" 
-        cuando sea el escenario correspondiente.
-
-        Nota: Necesitas OBJLoader, y su import:
-          import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-        o un script UMD que contenga OBJLoader.
-
-        function loadOBJModel(path) {
-          const objLoader = new THREE.OBJLoader();
-          objLoader.load(
-            path,
-            (obj) => {
-              // obj es un THREE.Group con la geometría
-              // Ajusta escala, posición, etc. si hace falta
-              obj.scale.set(0.1, 0.1, 0.1);
-              obj.position.set(0, 0, 0);
-
-              // Añadirlo al scenarioGroup
-              scenarioGroup.add(obj);
-            },
-            (xhr) => {
-              console.log((xhr.loaded / xhr.total * 100) + '% cargado de ' + path);
-            },
-            (error) => {
-              console.error('Error cargando OBJ:', error);
-            }
-          );
-        }
-
-        // Podrías llamarlo en loadBaseMilitar, p.ej.:
-        // function loadBaseMilitar() {
-        //   ...
-        //   loadOBJModel('models/base_militar.obj');
-        // }
-      */
-      // =========================================
-
-
-      //O SE PUEDE USAR 
-      /*
-  EJEMPLO DE CÓMO CARGAR MÚLTIPLES MODELOS .OBJ
-  Y COLOCARLOS EN DIFERENTES PARTES DEL MAPA
-*/
-
-// Suponiendo que ya tienes un OBJLoader inicializado (y un script UMD o ES Module):
-// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-
-// Supongamos que definimos esta función:
-      /* 
-      function loadOBJModel(path, position, scale) {
-  const objLoader = new THREE.OBJLoader();
-
-  // Cargar el archivo .OBJ
-  objLoader.load(
-    path,
-    (obj) => {
-      // Ajustar posición, escala, etc.
-      if (position) {
-        obj.position.set(position.x || 0, position.y || 0, position.z || 0);
-      }
-      if (scale) {
-        obj.scale.set(scale.x || 1, scale.y || 1, scale.z || 1);
-      }
-
-      // Agregar al grupo (scenarioGroup) para este escenario
-      // Asegúrate de que scenarioGroup ya exista o hayas creado uno
-      scenarioGroup.add(obj);
-    },
-    (xhr) => {
-      console.log((xhr.loaded / xhr.total * 100) + '% cargado de ' + path);
-    },
-    (error) => {
-      console.error('Error cargando OBJ:', error);
-    }
-  );
-}
-
-//Y ASI LO CARGARIAMOS 
-
-
-  loadOBJModel(
-    'models/contenedor.obj',   // ruta del archivo
-    { x: -5, y: 0, z: 2 },     // posición
-    { x: 0.05, y: 0.05, z: 0.05 } // escala
-  );
-
-
-
-      */
-
     });
+
+    document.getElementById("comunidadBtn").addEventListener("click", () => {
+  window.location.href = "comunidad.html";
+    });
+
   </script>
 </body>
 </html>
