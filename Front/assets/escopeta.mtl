@@ -1,0 +1,42 @@
+# Blender 4.0.1 MTL File: 'Landscape-1.blend'
+# www.blender.org
+
+newmtl Material_#26
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+map_d ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+
+newmtl Material_#28
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+map_d ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+
+newmtl Material_#29
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+map_d ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+
+newmtl Material_#30
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
+map_d ps1-double-barrel-shotgun-1840/source/db-shotgun-1840-tex.png
