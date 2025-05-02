@@ -1,317 +1,259 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Comunidad</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comunidad</title>
 
-  <!-- Tus fuentes y CSS globales -->
-  <link rel="stylesheet" href="inicio.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="inicio.css">
+<link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&display=swap" rel="stylesheet">
 
-  <!-- NUEVO CSS específico (puedes pasarlo a tu .css si prefieres) -->
-  <style>
-  /* -------------------- Estructura -------------------- */
-  body{
-    margin:0; min-height:100vh;
-    background:linear-gradient(to right,rgb(50,50,50),black 50%);
-    font-family:"Alumni Sans Inline One",sans-serif;
-    display:flex; flex-direction:column;
-  }
-  .header-comunidad{
-    display:flex; align-items:center; gap:20px;
-    background:#222; padding:12px 24px;
-  }
-  .link-volver{
-    color:#fff; text-decoration:none; font-size:20px; padding:8px 20px;
-    background:#333; border-radius:6px; position:relative; overflow:hidden;
-  }
-  .titulo-comunidad{ color:#fff; font-size:32px; margin:0; }
-  /* -------------------- Feed -------------------- */
-  .feed{
-    width:100%; max-width:640px; margin:32px auto;
-    display:flex; flex-direction:column; gap:24px;
-  }
-  .card{
-    background:#2b2b2b; border-radius:8px;
-    box-shadow:0 2px 4px rgba(0,0,0,.4);
-    padding:16px 18px; color:#eee;
-  }
-  /* Encabezado del post (avatar + nombre + tiempo) */
-  .card-head{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-  .card-head img{ width:48px; height:48px; border-radius:50%; }
-  .card-head .name{ font-weight:bold; font-size:18px; }
-  .card-head .time{ font-size:13px; color:#bbb; }
-  /* Mensaje */
-  .card-msg{ font-size:17px; line-height:1.35; white-space:pre-wrap; }
-  /* Imágenes (una o varias) */
-  .card-imgs{ margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
-  .card-imgs img{
-    max-width:100%; flex:1 1 calc(50% - 6px);
-    border-radius:6px; object-fit:cover;
-  }
-  /* ----------------- Animación borde ----------------- */
-  @keyframes borderAnimation{
-    0%{border-color:transparent;border-bottom-color:red;}
-    25%{border-bottom-color:orange;border-right-color:red;}
-    50%{border-bottom-color:yellow;border-right-color:orange;border-top-color:red;}
-    75%{border-bottom-color:red;border-right-color:yellow;border-top-color:orange;border-left-color:red;}
-    100%{border-color:red;}
-  }
-  .link-volver::before,.card::before{
-    content:""; position:absolute; inset:0; border:3px solid transparent;
-    border-radius:inherit; box-sizing:border-box; pointer-events:none;
-  }
-  .link-volver:hover::before, .card:hover::before{
-    animation:borderAnimation 1.5s linear forwards;
-  }
-  /* ---------------------------------------------- */
+<style>
+/* ---------- Estructura base ---------- */
+body{margin:0;min-height:100vh;background:linear-gradient(to right,rgb(50,50,50),black 50%);
+      font-family:"Alumni Sans Inline One",sans-serif;}
+/* reserva para sidebar */
+body.comunidad-layout{padding-left:80px;}
 
-  /* ---------- Ajustes solo para la vista de comunidad ---------- */
-body.comunidad-layout{
-  /* quitamos el centrado vertical que venía de inicio.css */
-  display:block;          /* ya no flex */
-  position:static;        /* evita stacking raro */
-  justify-content:unset;
-  align-items:unset;
+.header-comunidad{position:sticky;top:0;left:0;z-index:1000;
+  display:flex;align-items:center;gap:20px;background:#222;padding:12px 24px;
+  margin-left:-80px;width:calc(100% + 80px);}
+.link-volver{color:#fff;font-size:20px;padding:8px 20px;background:#333;border-radius:6px;text-decoration:none;}
+.titulo-comunidad{color:#fff;font-size:32px;margin:0;}
+.token-btn{margin-left:auto;background:#1e90ff;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:15px;}
 
-  /* reservamos el ancho de la sidebar */
-  padding-left:80px;      /* = .sidebar width */
+.feed{max-width:640px;margin:32px auto;display:flex;flex-direction:column;gap:24px;}
+.card{background:#2b2b2b;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.4);padding:16px 18px;color:#eee;}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.card-head img{width:48px;height:48px;border-radius:50%;}
+.card-msg{font-size:17px;white-space:pre-wrap;}
+.card-imgs{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;}
+.card-imgs img{max-width:100%;flex:1 1 calc(50% - 6px);border-radius:6px;object-fit:cover;}
+.btn-coment{margin-top:10px;font-size:15px;background:none;border:none;color:#1e90ff;cursor:pointer;}
+.comments-container.oculto{display:none;}
 
-  /* resto de tu estilo base */
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(to right,rgb(50,50,50),black 50%);
-  font-family:"Alumni Sans Inline One",sans-serif;
+.create-card{max-width:640px;margin:32px auto;padding:16px 18px;background:#242424;border-radius:8px;color:#eee;}
+.create-text,#urlImg{width:100%;background:#333;color:#eee;border:none;border-radius:6px;padding:10px;font-size:15px;}
+.img-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.img-btn{background:#3d3d3d;color:#1e90ff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:14px;}
+.post-btn{margin-top:10px;background:#1e90ff;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-size:16px;}
+/* ---------- Modal ---------- */
+.modal.oculto{display:none;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:1200;}
+.modal-content{background:#2b2b2b;color:#eee;padding:24px 26px;border-radius:8px;width:90%;max-width:420px;box-shadow:0 4px 10px rgba(0,0,0,.6);}
+.modal-content input{width:100%;padding:10px;margin-top:12px;background:#333;color:#eee;border:none;border-radius:6px;font-size:15px;}
+.modal-actions{margin-top:20px;display:flex;gap:14px;}
+.modal-btn{flex:1;padding:8px 0;border:none;border-radius:6px;cursor:pointer;font-size:15px;}
+.guardar{background:#1e90ff;color:#fff;}
+.cancelar{background:#555;color:#ddd;}
+.modal-help{font-size:12px;color:#999;margin-top:12px}
+/* ---------- Crear publicación ---------- */
+.create-card{
+  max-width: 640px;           /* mismo ancho que los posts */
+  width: 100%;
+  margin: 32px auto;          /* arriba y abajo 32 px, centrada */
+  padding: 16px 18px;
+  background: #242424;
+  border-radius: 8px;
+  color: #eee;
 }
 
-/* que el encabezado quede siempre visible y no lo tape nada */
-.header-comunidad{
-  position:sticky; top:0; left:0;
-  z-index:1000;            /* por encima de la sidebar */
-  display:flex; align-items:center; gap:20px;
-  background:#222; padding:12px 24px;
-  /* compensa el padding-left del body para que se vea completo */
-  margin-left:-80px; width:calc(100% + 80px);
-}
-
-/* el feed ya no necesita centrarse; con max-width queda bonito */
-.feed{
-  max-width:640px;
-  margin:32px auto;
-  display:flex; flex-direction:column; gap:24px;
-}
-/* ------------------------------------------------------------- */
-
-
-  </style>
+</style>
 </head>
 
 <body class="comunidad-layout">
-  <header class="header-comunidad">
-    <a href="game.html" class="link-volver">VOLVER</a>
-    <h1 class="titulo-comunidad">COMUNIDAD</h1>
-  </header>
+<header class="header-comunidad">
+  <a href="game.html" class="link-volver">VOLVER</a>
+  <h1 class="titulo-comunidad">COMUNIDAD</h1>
+  <button id="btnToken" class="token-btn">Configurar página</button>
+</header>
+
 <!-- Crear publicación -->
 <article class="card create-card">
   <div class="card-head">
-    <img src="https://graph.facebook.com/595973073605173/picture?type=large" alt="avatar">
+    <img id="pageAvatar" src="" alt="avatar">
     <span class="name">Publicar en la página</span>
   </div>
-
   <form id="formPost">
     <textarea id="txtMensaje" rows="3" placeholder="¿Qué estás pensando?" class="create-text"></textarea>
-
     <div class="img-row">
-      <input type="file"  id="fileImg" accept="image/*" hidden>
+      <input type="file" id="fileImg" accept="image/*" hidden>
       <button type="button" id="btnFile" class="img-btn">Foto desde tu PC</button>
-
-      <input type="url"   id="urlImg"  placeholder="o pega URL de imagen">
+      <input type="url" id="urlImg" placeholder="o pega URL de imagen">
     </div>
-
     <button class="post-btn">Publicar</button>
   </form>
 </article>
 
-  <!-- El feed -->
-  <section class="feed"></section>
+<!-- Feed -->
+<section class="feed"></section>
 
-  <script>
-    /* ====== CONFIGURA TU PÁGINA ====== */
-const PAGE_ID = "595973073605173";
-const TOKEN   = "EAAHpZBMlTZCIwBO3uiKAxVWZCZC9nKAINBnzN9VfomoNS1CqCTo9r75OSKaCWCmdLhotrJe9j1mCPDKhBFwxZAv9RhaRH2AI8mLaCZAZCTLZAUwfkMJvccv97iSZAihnMekKp9SoFZCWmDpE8zndBpHZAYmEJxQuqijrekRXunUuqYF5RZAFy1fIxkYrbj4ZAgKjSnOIc";
-/* Foto de perfil de la página */
-const PAGE_PIC = `https://graph.facebook.com/${PAGE_ID}/picture?type=large`;
-/* ========== UTILIDADES ========== */
+<!-- Modal -->
+<div id="tokenModal" class="modal oculto">
+  <div class="modal-content">
+    <h2>Configuración de página</h2>
+    <input id="inputPage"  type="text" placeholder="Page ID">
+    <input id="inputToken" type="text" placeholder="Access Token">
+    <div class="modal-actions">
+      <button id="saveToken"   class="modal-btn guardar">Guardar</button>
+      <button id="cancelToken" class="modal-btn cancelar">Cancelar</button>
+    </div>
+    <p class="modal-help">Los datos se almacenan solo en este navegador.</p>
+  </div>
+</div>
+
+<script>
+/* ---------- Estado persistente ---------- */
+const LS_ID_KEY    = "fbPageId";
+const LS_TOKEN_KEY = "fbPageAccessToken";
+let PAGE_ID = localStorage.getItem(LS_ID_KEY)    || "";
+let TOKEN   = localStorage.getItem(LS_TOKEN_KEY) || "";
+
+function saveCreds(id,token){
+  PAGE_ID = id; TOKEN = token;
+  localStorage.setItem(LS_ID_KEY,id);
+  localStorage.setItem(LS_TOKEN_KEY,token);
+  document.getElementById("pageAvatar").src =
+      `https://graph.facebook.com/${PAGE_ID}/picture?type=large`;
+}
+
+/* ---------- Selectores comunes ---------- */
 const feed = document.querySelector(".feed");
-const fmt  = iso => new Date(iso).toLocaleString();
-/* ========== CARGAR FEED ========== */
+const fmt  = iso=>new Date(iso).toLocaleString();
+
+/* ---------- Modal elementos ---------- */
+const modal      = document.getElementById("tokenModal");
+const inputPage  = document.getElementById("inputPage");
+const inputToken = document.getElementById("inputToken");
+document.getElementById("btnToken").onclick   = abrirModal;
+document.getElementById("cancelToken").onclick=()=>modal.classList.add("oculto");
+document.getElementById("saveToken").onclick  = ()=>{
+  const id=inputPage.value.trim(), tk=inputToken.value.trim();
+  if(!id||!tk){alert("Ingresa Page ID y Access Token");return;}
+  saveCreds(id,tk); modal.classList.add("oculto"); cargarFeed();
+};
+function abrirModal(){  // precargar valores
+  inputPage.value  = PAGE_ID;
+  inputToken.value = TOKEN;
+  modal.classList.remove("oculto");
+  inputPage.focus();
+}
+
+/* ---------- Cargar feed ---------- */
 async function cargarFeed(){
-  const url = `https://graph.facebook.com/v22.0/${PAGE_ID}/posts` +
-              `?fields=id,message,created_time,` +
-              `attachments{media_type,media,subattachments},` +
-              `from{name}` +
-              `&limit=15&access_token=${TOKEN}`;
-  const fb  = await fetch(url).then(r=>r.json());
-  if(fb.error){ alert("❌ "+fb.error.message); return; }
+  if(!PAGE_ID||!TOKEN){ abrirModal(); return; }
 
-  feed.innerHTML = "";                        // limpia
-  fb.data.forEach(renderCard);
-}
-/* ========== RENDER ========== */
-function renderCard(post){
-  /* --- texto --- */
-  const msg = post.message
-      ? `<p class="card-msg">${post.message}</p>` : "";
-
-  /* --- imágenes (1+N) --- */
-  const imgsArr = extraeImagenes(post.attachments);
-  const imgs = imgsArr.length
-      ? `<div class="card-imgs">${imgsArr.map(src=>`<img src="${src}" loading="lazy">`).join("")}</div>` 
-      : "";
-
-  /* --- tarjeta completa, ahora con botón y contenedor de comentarios --- */
-  feed.insertAdjacentHTML("beforeend",`
-    <article class="card" data-id="${post.id}">
-      <div class="card-head">
-        <img src="${PAGE_PIC}" alt="avatar">
-        <div>
-          <div class="name">${post.from?.name||"Página"}</div>
-          <div class="time">${fmt(post.created_time)}</div>
-        </div>
-      </div>
-      ${msg}
-      ${imgs}
-
-      <button class="btn-coment">Ver comentarios</button>
-      <div class="comments-container oculto"></div>
-    </article>
-  `);
-}
-
-/* ========== Nuevo manejador de “Ver comentarios” ========== */
-feed.addEventListener("click", async e=>{
-  if(!e.target.matches(".btn-coment")) return;
-
-  const card       = e.target.closest(".card");
-  const commentsEl = card.querySelector(".comments-container");
-  const postId     = card.dataset.id;
-
-  /* ¿Ya estaban cargados? → solo hacemos toggle de visibilidad */
-  if(commentsEl.dataset.loaded){
-    commentsEl.classList.toggle("oculto");
-    e.target.textContent = commentsEl.classList.contains("oculto")
-        ? "Ver comentarios" : "Ocultar comentarios";
-    return;
-  }
-
-  /* 1ª vez: pedimos los comentarios a Graph */
-  e.target.textContent = "Cargando…";
-  const url = `https://graph.facebook.com/v22.0/${postId}/comments` +
-              `?fields=from{name},message,created_time&limit=25&access_token=${TOKEN}`;
-
-  const fb = await fetch(url).then(r=>r.json());
+  const url=`https://graph.facebook.com/v22.0/${PAGE_ID}/posts`+
+            `?fields=id,message,created_time,attachments{media_type,media,subattachments},from{name}`+
+            `&limit=15&access_token=${TOKEN}`;
+  const fb=await fetch(url).then(r=>r.json());
   if(fb.error){
-    alert("❌ "+fb.error.message);
-    e.target.textContent = "Ver comentarios";
+    if(fb.error.code===190){
+      alert("⚠️ El access token caducó o es inválido.");
+      abrirModal();
+    }else{
+      alert("❌ "+fb.error.message);
+    }
     return;
   }
+  feed.innerHTML = "";
+fb.data.forEach(renderCard);
+/* <- NUEVO: vuelve al principio */
+window.scrollTo({top: 0, behavior: "auto"});
 
-  /* Pintamos cada comentario */
-  commentsEl.innerHTML = (fb.data||[])
-    .map(c=>`
-      <div class="comment">
-        <b>${c.from?.name||"Anónimo"}</b> ${c.message}
-        <br><small>${fmt(c.created_time)}</small>
-      </div>`).join("");
-
-  commentsEl.dataset.loaded = "1";
-  commentsEl.classList.remove("oculto");
-  e.target.textContent = "Ocultar comentarios";
-});
-
-/* ─── obtiene URLs de imagen incluso si es carrusel ─── */
-function extraeImagenes(attach){
-  if(!attach?.data?.length) return [];
-  const imgs=[];
-  attach.data.forEach(a=>{
-    if(a.media?.image?.src) imgs.push(a.media.image.src);
-    /* carruseles / álbumes */
-    if(a.subattachments?.data){
-      a.subattachments.data.forEach(sa=>{
-        if(sa.media?.image?.src) imgs.push(sa.media.image.src);
-      });
-    }
-  });
-  /* evita duplicados y limita a 4 para diseño compacto */
-  return [...new Set(imgs)].slice(0,4);
 }
-document.addEventListener("DOMContentLoaded",cargarFeed);
 
-/* ========== NUEVO: CREAR PUBLICACIÓN ========== */
-/* ======= Crear publicación ======= */
-const form   = document.getElementById("formPost");
-const fTxt   = document.getElementById("txtMensaje");
-const fFile  = document.getElementById("fileImg");
-const fURL   = document.getElementById("urlImg");
-document.getElementById("btnFile").onclick = () => fFile.click();
-
-form.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const message = fTxt.value.trim();
-  const file    = fFile.files[0];
-  const imgURL  = fURL.value.trim();
-
-  if(!message && !file && !imgURL){
-    alert("Escribe algo o elige una imagen"); return;
-  }
-
-  let endpoint, body, isPhoto = file || imgURL;
-
-  if(isPhoto){
-    endpoint = `https://graph.facebook.com/v22.0/${PAGE_ID}/photos`;
-    if(file){                       // ---- subida de archivo ----
-      body = new FormData();
-      body.append("source", file);
-      if(message) body.append("message", message);
-      body.append("access_token", TOKEN);
-    }else{                          // ---- imagen por URL ----
-      body = new URLSearchParams({
-        url: imgURL,
-        access_token: TOKEN
-      });
-      if(message) body.append("message", message);
-    }
-  }else{                            // ---- solo texto ----
-    endpoint = `https://graph.facebook.com/v22.0/${PAGE_ID}/feed`;
-    body = new URLSearchParams({
-      message, access_token: TOKEN
+/* ---------- Render card ---------- */
+function renderCard(p){
+  const msg = p.message?`<p class="card-msg">${p.message}</p>`:"";
+  const imgsArr = []; const att=p.attachments?.data||[];
+  att.forEach(a=>{
+    if(a.media?.image?.src) imgsArr.push(a.media.image.src);
+    a.subattachments?.data?.forEach(sa=>{
+      if(sa.media?.image?.src) imgsArr.push(sa.media.image.src);
     });
+  });
+  const imgs = imgsArr.slice(0,4)
+    .map(s=>`<img src="${s}" loading="lazy">`).join("");
+  const imgsHtml = imgs?`<div class="card-imgs">${imgs}</div>`:"";
+
+  feed.insertAdjacentHTML("beforeend",`
+   <article class="card" data-id="${p.id}">
+     <div class="card-head">
+       <img src="https://graph.facebook.com/${PAGE_ID}/picture?type=large">
+       <div><div class="name">${p.from?.name||"Página"}</div>
+            <div class="time">${fmt(p.created_time)}</div></div>
+     </div>${msg}${imgsHtml}
+     <button class="btn-coment">Ver comentarios</button>
+     <div class="comments-container oculto"></div>
+   </article>`);
+}
+
+/* ---------- Comentarios ---------- */
+feed.addEventListener("click",async e=>{
+  if(!e.target.matches(".btn-coment"))return;
+  const card=e.target.closest(".card");
+  const cont=card.querySelector(".comments-container");
+  const id=card.dataset.id;
+  if(cont.dataset.loaded){
+    cont.classList.toggle("oculto");
+    e.target.textContent=cont.classList.contains("oculto")?"Ver comentarios":"Ocultar comentarios";
+    return;
   }
-
-  /* deshabilita botón mientras envía */
-  const btn = form.querySelector(".post-btn");
-  btn.textContent = "Publicando…"; btn.disabled = true;
-
-  const rsp = await fetch(endpoint, {
-    method:"POST", body
-  }).then(r=>r.json());
-
-  btn.textContent = "Publicar"; btn.disabled = false;
-
-  if(rsp.error){
-    alert("❌ "+rsp.error.message);
-  }else{
-    alert("✅ ¡Publicado!");
-    fTxt.value = ""; fFile.value = ""; fURL.value = "";
-    cargarFeed();                    // refresca el feed
-  }
+  e.target.textContent="Cargando…";
+  const url=`https://graph.facebook.com/v22.0/${id}/comments?fields=from{name},message,created_time&limit=25&access_token=${TOKEN}`;
+  const fb=await fetch(url).then(r=>r.json());
+  if(fb.error){alert("❌ "+fb.error.message);e.target.textContent="Ver comentarios";return;}
+  cont.innerHTML=fb.data.map(c=>`<div class="comment"><b>${c.from?.name||"Anónimo"}</b> ${c.message}<br><small>${fmt(c.created_time)}</small></div>`).join("");
+  cont.dataset.loaded="1"; cont.classList.remove("oculto");
+  e.target.textContent="Ocultar comentarios";
 });
 
+/* ---------- Publicar ---------- */
+const form=document.getElementById("formPost");
+const fTxt=document.getElementById("txtMensaje");
+const fFile=document.getElementById("fileImg");
+const fURL=document.getElementById("urlImg");
+document.getElementById("btnFile").onclick=()=>fFile.click();
 
-  </script>
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!PAGE_ID||!TOKEN){alert("Configura primero Page ID y Token");return;}
 
+  const msg=fTxt.value.trim(), file=fFile.files[0], urlImg=fURL.value.trim();
+  if(!msg&&!file&&!urlImg){alert("Nada que publicar");return;}
+
+  let endp, body;
+  if(file||urlImg){
+    endp=`https://graph.facebook.com/v22.0/${PAGE_ID}/photos`;
+    if(file){
+      body=new FormData(); body.append("source",file);
+      if(msg)body.append("message",msg); body.append("access_token",TOKEN);
+    }else{
+      body=new URLSearchParams({url:urlImg,access_token:TOKEN});
+      if(msg)body.append("message",msg);
+    }
+  }else{
+    endp=`https://graph.facebook.com/v22.0/${PAGE_ID}/feed`;
+    body=new URLSearchParams({message:msg,access_token:TOKEN});
+  }
+
+  const btn=form.querySelector(".post-btn");
+  btn.textContent="Publicando…"; btn.disabled=true;
+  const rsp=await fetch(endp,{method:"POST",body}).then(r=>r.json());
+  btn.textContent="Publicar"; btn.disabled=false;
+
+  if(rsp.error){alert("❌ "+rsp.error.message);}
+  else{alert("✅ ¡Publicado!");fTxt.value=fURL.value="";fFile.value="";cargarFeed();}
+});
+
+/* ---------- Arranque ---------- */
+document.getElementById("pageAvatar").src=
+  PAGE_ID?`https://graph.facebook.com/${PAGE_ID}/picture?type=large`:"";
+
+document.addEventListener("DOMContentLoaded",()=>{
+  if(PAGE_ID&&TOKEN) cargarFeed(); else abrirModal();
+});
+</script>
 </body>
 </html>

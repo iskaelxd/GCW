@@ -379,3 +379,11 @@ body {
   margin:32px auto;     /* centrado y mismo espacio superior/inf. */
   width:100%;           /* permite reducir con pantallas pequeñas */
 }
+/* --- Ajuste final para permitir scroll en comunidad --- */
+body.comunidad-layout{
+  height: auto;           /* deja que crezca según el contenido   */
+  min-height: 100vh;      /* pero al menos ocupa toda la ventana  */
+  overflow-y: auto;       /* vuelve a habilitar el scroll vertical*/
+  justify-content: initial; /* cancela centrado heredado          */
+  align-items: initial;
+}
