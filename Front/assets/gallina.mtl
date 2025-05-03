@@ -4,10 +4,9 @@
 newmtl chicken_brown
 Ns 20.000006
 Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd chicken/source/Bird_Chicken_Brown_01/model/textures/chicken_brown_color.tga
-map_Ks chicken/source/Bird_Chicken_Brown_01/model/textures/chicken_brown_specular.tga
-map_Bump -bm 1.000000 chicken/source/Bird_Chicken_Brown_01/model/textures/chicken_brown_bump.tga
+map_Kd gallinaTex.png

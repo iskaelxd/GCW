@@ -3,29 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zomvival - Pantalla de Juego</title>
+  <title>Zomvival</title>
   <link rel="stylesheet" href="game.css" />
-  <!-- Tipografías -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline+One:ital@0;1&family=Nunito:ital,wght@0,200&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header class="main-header">
     <h1>Zomvival</h1>
     <button id="comunidadBtn">Ir a Comunidad</button>
   </header>
-  
+
   <div class="game-container" id="gameContainer">
-    <!-- OVERLAY INICIAL -->
     <div id="startOverlay" class="initial-overlay">
       <button class="menu-button" id="startGameBtn">Start Game</button>
     </div>
 
-    <!-- Botones Esquina Superior -->
     <div class="top-bar-left">
       <button class="ui-button" id="toggleFullscreen">Expandir</button>
     </div>
@@ -33,90 +27,61 @@
       <button class="ui-button hidden" id="quickConfigBtn">Config. Rápida</button>
     </div>
 
-    <!-- Wizard de Config (3 pasos) -->
     <div id="configOverlay" class="config-overlay hidden">
       <div id="levelStep" class="config-step">
         <h2>Elige un Nivel</h2>
         <div class="cards-container">
-          <div class="card" data-level="Ciudad en Ruinas">
-            <h3>Ciudad en Ruinas</h3>
-            <p>Calles destruidas y hordas por doquier.</p>
-          </div>
-          <div class="card" data-level="Bosque Tenebroso">
-            <h3>Bosque Tenebroso</h3>
-            <p>Niebla constante y poca visibilidad.</p>
-          </div>
-          <div class="card" data-level="Base Militar">
-            <h3>Base Militar</h3>
-            <p>Organización y fuego cruzado constante.</p>
-          </div>
+          <div class="card" data-level="Ciudad en Ruinas"><h3>Ciudad en Ruinas</h3><p>Calles destruidas y hordas por doquier.</p></div>
+          <div class="card" data-level="Granja Tenebrosa"><h3>Granja Tenebrosa</h3><p>Niebla constante y poca visibilidad.</p></div>
+          <div class="card" data-level="Base Militar"><h3>Base Militar</h3><p>Organización y fuego cruzado constante.</p></div>
         </div>
       </div>
 
       <div id="difficultyStep" class="config-step hidden">
         <h2>Elige la Dificultad</h2>
         <div class="cards-container">
-          <div class="card" data-difficulty="Fácil">
-            <h3>Fácil</h3>
-            <p>Para sobrevivientes novatos.</p>
-          </div>
-          <div class="card" data-difficulty="Normal">
-            <h3>Normal</h3>
-            <p>Un buen reto para la mayoría.</p>
-          </div>
-          <div class="card" data-difficulty="Difícil">
-            <h3>Difícil</h3>
-            <p>Solo para valientes extremos.</p>
-          </div>
+          <div class="card" data-difficulty="Fácil"><h3>Fácil</h3><p>Para sobrevivientes novatos.</p></div>
+          <div class="card" data-difficulty="Normal"><h3>Normal</h3><p>Un buen reto para la mayoría.</p></div>
+          <div class="card" data-difficulty="Difícil"><h3>Difícil</h3><p>Solo para valientes extremos.</p></div>
         </div>
       </div>
 
       <div id="modeStep" class="config-step hidden">
         <h2>Elige el Modo de Juego</h2>
         <div class="cards-container">
-          <div class="card" data-mode="Individual">
-            <h3>Individual</h3>
-            <p>Sobrevive por tu cuenta.</p>
-          </div>
-          <div class="card" data-mode="Multijugador">
-            <h3>Multijugador</h3>
-            <p>Forma equipo con otros jugadores.</p>
-          </div>
+          <div class="card" data-mode="Individual"><h3>Individual</h3><p>Sobrevive por tu cuenta.</p></div>
+          <div class="card" data-mode="Multijugador"><h3>Multijugador</h3><p>Forma equipo con otros jugadores.</p></div>
         </div>
       </div>
     </div>
 
-    <!-- UI del juego -->
     <div id="gameUI" class="game-ui hidden">
       <div class="inventory-bar">
-        <div class="inventory-item">Espada</div>
-        <div class="inventory-item">Escudo</div>
-        <div class="inventory-item">Poción</div>
+        <div class="inventory-item">Pistola</div>
+        <div class="inventory-item">Botiquin</div>
+        <div class="inventory-item">Munición</div>
         <div class="inventory-item">Mapa</div>
       </div>
     </div>
 
-    <!-- SIDEBAR CONFIG RÁPIDA -->
     <div id="quickConfigSidebar" class="sidebar hidden">
       <h2>Configuración Rápida</h2>
-      <label>
-        Nivel:
+      <label>Nivel:
         <select id="sidebarLevelSelect">
           <option value="Ciudad en Ruinas">Ciudad en Ruinas</option>
-          <option value="Bosque Tenebroso">Bosque Tenebroso</option>
+          <option value="Granja Tenebrosa">Granja Tenebrosa</option>
           <option value="Base Militar">Base Militar</option>
         </select>
       </label>
-      <label>
-        Dificultad:
+
+      <label>Dificultad:
         <select id="sidebarDifficultySelect">
           <option value="Fácil">Fácil</option>
           <option value="Normal">Normal</option>
           <option value="Difícil">Difícil</option>
         </select>
       </label>
-      <label>
-        Modo:
+      <label>Modo:
         <select id="sidebarModeSelect">
           <option value="Individual">Individual</option>
           <option value="Multijugador">Multijugador</option>
@@ -126,365 +91,7 @@
       <button class="ui-button" id="closeSidebarConfig">Cerrar</button>
     </div>
   </div>
-
-  <!-- Three.js desde un CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-
-  <!-- OBJLoader (para cargar .obj). Ej: importado desde un gist o un CDN con UMD -->
-  <!-- Si no encuentras un bundle UMD, deberás usar ES modules y un bundler. -->
-  <!-- EJEMPLO: <script src="jsm/OBJLoader.js"></script> 
-       O un link a <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/OBJLoader.js"></script> -->
-  <!-- 
-    * Ten en cuenta que a partir de three.js r150 se recomienda usar ES Modules.
-    * Este snippet ilustra el concepto, pero podrías necesitar un bundler (webpack/Vite) 
-      o una versión UMD del OBJLoader. 
-  -->
-
-  <script>
-    // Variables globales
-    let isExpanded    = false;
-    let hasConfigured = false;
-
-    let selectedLevel      = null;
-    let selectedDifficulty = null;
-    let selectedMode       = null;
-
-    let scene, camera, renderer;
-    let scenarioGroup;
-    let cube;
-    const keys = {};
-
-    let clock;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const gameContainer       = document.getElementById("gameContainer");
-      const startOverlay        = document.getElementById("startOverlay");
-      const configOverlay       = document.getElementById("configOverlay");
-      const gameUI              = document.getElementById("gameUI");
-      const quickConfigSidebar  = document.getElementById("quickConfigSidebar");
-
-      const startGameBtn        = document.getElementById("startGameBtn");
-      const toggleFullscreen    = document.getElementById("toggleFullscreen");
-      const quickConfigBtn      = document.getElementById("quickConfigBtn");
-
-      const levelStep           = document.getElementById("levelStep");
-      const difficultyStep      = document.getElementById("difficultyStep");
-      const modeStep            = document.getElementById("modeStep");
-
-      const sidebarLevelSelect      = document.getElementById("sidebarLevelSelect");
-      const sidebarDifficultySelect = document.getElementById("sidebarDifficultySelect");
-      const sidebarModeSelect       = document.getElementById("sidebarModeSelect");
-      const saveSidebarConfig       = document.getElementById("saveSidebarConfig");
-      const closeSidebarConfig      = document.getElementById("closeSidebarConfig");
-
-      // Leer config localStorage
-      const savedConfig = localStorage.getItem("gameConfig");
-      if (savedConfig) {
-        const configObj = JSON.parse(savedConfig);
-        selectedLevel      = configObj.level;
-        selectedDifficulty = configObj.difficulty;
-        selectedMode       = configObj.mode;
-        hasConfigured      = true;
-        quickConfigBtn.classList.remove("hidden");
-      }
-
-      initThreeScene();
-      if (selectedLevel) loadCurrentLevel();
-
-      // Botón Start
-      startGameBtn.addEventListener("click", () => {
-        if (!hasConfigured) {
-          startOverlay.classList.add("hidden");
-          openConfigOverlay();
-        } else {
-          startOverlay.classList.add("hidden");
-          gameUI.classList.remove("hidden");
-          loadCurrentLevel();
-        }
-      });
-
-      // Expandir
-      toggleFullscreen.addEventListener("click", () => {
-        isExpanded = !isExpanded;
-        if (isExpanded) {
-          gameContainer.classList.add("expanded");
-          toggleFullscreen.textContent = "Reducir";
-        } else {
-          gameContainer.classList.remove("expanded");
-          toggleFullscreen.textContent = "Expandir";
-        }
-      });
-      gameContainer.addEventListener('transitionend', handleResize);
-
-      function openConfigOverlay() {
-        configOverlay.classList.remove("hidden");
-        levelStep.classList.remove("hidden");
-        difficultyStep.classList.add("hidden");
-        modeStep.classList.add("hidden");
-      }
-
-      levelStep.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("click", () => {
-          selectedLevel = card.dataset.level;
-          levelStep.classList.add("hidden");
-          difficultyStep.classList.remove("hidden");
-        });
-      });
-      difficultyStep.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("click", () => {
-          selectedDifficulty = card.dataset.difficulty;
-          difficultyStep.classList.add("hidden");
-          modeStep.classList.remove("hidden");
-        });
-      });
-      modeStep.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("click", () => {
-          selectedMode = card.dataset.mode;
-          hasConfigured = true;
-          configOverlay.classList.add("hidden");
-          startOverlay.classList.remove("hidden");
-          quickConfigBtn.classList.remove("hidden");
-          saveConfig();
-          alert("Configuración Completa\n" +
-                "Nivel: " + selectedLevel + "\n" +
-                "Dificultad: " + selectedDifficulty + "\n" +
-                "Modo: " + selectedMode);
-        });
-      });
-
-      function saveConfig() {
-        const data = { level: selectedLevel, difficulty: selectedDifficulty, mode: selectedMode };
-        localStorage.setItem("gameConfig", JSON.stringify(data));
-      }
-
-      // Config Rápida
-      quickConfigBtn.addEventListener("click", () => {
-        quickConfigSidebar.classList.remove("hidden");
-        sidebarLevelSelect.value      = selectedLevel      || "Ciudad en Ruinas";
-        sidebarDifficultySelect.value = selectedDifficulty || "Fácil";
-        sidebarModeSelect.value       = selectedMode       || "Individual";
-      });
-      saveSidebarConfig.addEventListener("click", () => {
-        selectedLevel      = sidebarLevelSelect.value;
-        selectedDifficulty = sidebarDifficultySelect.value;
-        selectedMode       = sidebarModeSelect.value;
-        saveConfig();
-        alert("Nueva Configuración Aplicada\n" +
-              "Nivel: " + selectedLevel + "\n" +
-              "Dificultad: " + selectedDifficulty + "\n" +
-              "Modo: " + selectedMode);
-        quickConfigSidebar.classList.add("hidden");
-        loadCurrentLevel();
-      });
-      closeSidebarConfig.addEventListener("click", () => {
-        quickConfigSidebar.classList.add("hidden");
-      });
-
-      function initThreeScene() {
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87ceeb);
-
-        const w = gameContainer.clientWidth;
-        const h = gameContainer.clientHeight;
-        camera = new THREE.PerspectiveCamera(75, w/h, 0.1, 1000);
-        camera.position.set(0, 3, 8);
-
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(w, h);
-        gameContainer.appendChild(renderer.domElement);
-
-        // Cubo rojo
-        const geo = new THREE.BoxGeometry();
-        const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        cube = new THREE.Mesh(geo, mat);
-        cube.position.set(-4, 1.5, 0);
-        scene.add(cube);
-
-        // Teclas
-        document.addEventListener("keydown", e => { keys[e.code] = true; });
-        document.addEventListener("keyup", e => { keys[e.code] = false; });
-
-        clock = new THREE.Clock();
-        animate();
-      }
-
-      function animate() {
-        requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        // Rotación continua del cubo
-        cube.rotation.x += 0.005;
-        cube.rotation.y += 0.005;
-
-        // Actualizar cámara
-        updateCamera(delta);
-
-        renderer.render(scene, camera);
-      }
-
-      // Teclas: W,A,S,D = mover, Q,E = girar
-      function updateCamera(delta) {
-        const moveSpeed = 10;   
-        const rotateSpeed = 1.5;
-
-        // W,S (avance/retroceso)
-        if (keys["KeyW"]) camera.translateZ(-moveSpeed * delta);
-        if (keys["KeyS"]) camera.translateZ(moveSpeed * delta);
-
-        // A,D (lateral)
-        if (keys["KeyA"]) camera.translateX(-moveSpeed * delta);
-        if (keys["KeyD"]) camera.translateX(moveSpeed * delta);
-
-        // Q,E (girar izquierda/derecha)
-        if (keys["KeyQ"]) camera.rotation.y += rotateSpeed * delta;
-        if (keys["KeyE"]) camera.rotation.y -= rotateSpeed * delta;
-      }
-
-      function handleResize() {
-        const w = gameContainer.clientWidth;
-        const h = gameContainer.clientHeight;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
-      }
-
-      // =========================================
-      // CARGA DE ESCENARIOS
-      // =========================================
-      function loadCurrentLevel() {
-        if (scenarioGroup) {
-          scene.remove(scenarioGroup);
-          scenarioGroup = null;
-        }
-        scenarioGroup = new THREE.Group();
-        scene.fog = null;
-
-        if (selectedLevel === "Bosque Tenebroso") {
-          loadBosqueTenebroso();
-          // Ejemplo: loadOBJModel('models/bosque_obj.obj');
-        } else if (selectedLevel === "Base Militar") {
-          loadBaseMilitar();
-          // Ejemplo: loadOBJModel('models/base_militar.obj');
-        } else {
-          loadCiudadEnRuinas();
-          // Ejemplo: loadOBJModel('models/ciudad_ruinas.obj');
-        }
-        scene.add(scenarioGroup);
-      }
-
-      function loadCiudadEnRuinas() {
-        const groundGeo = new THREE.PlaneGeometry(40, 40);
-        const groundMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.rotation.x = -Math.PI / 2;
-        scenarioGroup.add(ground);
-
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(10, 10, 5);
-        scenarioGroup.add(dirLight);
-
-        for (let i = 0; i < 6; i++) {
-          const buildingGeo = new THREE.BoxGeometry(3, Math.random()*5+5, 3);
-          const buildingMat = new THREE.MeshStandardMaterial({ color: 0x888888 });
-          const building = new THREE.Mesh(buildingGeo, buildingMat);
-          building.position.set(
-            (Math.random()-0.5)*25,
-            buildingGeo.parameters.height/2,
-            (Math.random()-0.5)*25
-          );
-          scenarioGroup.add(building);
-        }
-      }
-
-      function loadBosqueTenebroso() {
-        scene.fog = new THREE.Fog(0x000000, 5, 30);
-
-        const groundGeo = new THREE.PlaneGeometry(40, 40);
-        const groundMat = new THREE.MeshStandardMaterial({ color: 0x003300 });
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.rotation.x = -Math.PI / 2;
-        scenarioGroup.add(ground);
-
-        for (let i = 0; i < 10; i++) {
-          const troncoGeo = new THREE.CylinderGeometry(0.2, 0.5, 3);
-          const troncoMat = new THREE.MeshStandardMaterial({ color: 0x654321 });
-          const tronco = new THREE.Mesh(troncoGeo, troncoMat);
-
-          const copaGeo = new THREE.SphereGeometry(1.2, 8, 8);
-          const copaMat = new THREE.MeshStandardMaterial({ color: 0x002200 });
-          const copa = new THREE.Mesh(copaGeo, copaMat);
-          copa.position.y = 2.2;
-
-          const arbol = new THREE.Group();
-          arbol.add(tronco);
-          arbol.add(copa);
-
-          arbol.position.x = (Math.random()-0.5)*25;
-          arbol.position.z = (Math.random()-0.5)*25;
-          arbol.position.y = 1.5;
-
-          scenarioGroup.add(arbol);
-        }
-
-        const ambLight = new THREE.AmbientLight(0xffffff, 0.2);
-        scenarioGroup.add(ambLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        dirLight.position.set(10, 10, 5);
-        scenarioGroup.add(dirLight);
-      }
-
-      function loadBaseMilitar() {
-        const groundGeo = new THREE.PlaneGeometry(40, 40);
-        const groundMat = new THREE.MeshStandardMaterial({ color: 0x556655 });
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.rotation.x = -Math.PI / 2;
-        scenarioGroup.add(ground);
-
-        const wallGeo = new THREE.BoxGeometry(40, 2, 0.5);
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
-
-        const wall1 = new THREE.Mesh(wallGeo, wallMat);
-        wall1.position.set(0, 1, 20);
-        scenarioGroup.add(wall1);
-
-        const wall2 = wall1.clone();
-        wall2.position.set(0, 1, -20);
-        scenarioGroup.add(wall2);
-
-        const wallSideGeo = new THREE.BoxGeometry(40, 2, 0.5);
-        const wallSide1 = new THREE.Mesh(wallSideGeo, wallMat);
-        wallSide1.rotation.y = Math.PI/2;
-        wallSide1.position.set(20, 1, 0);
-        scenarioGroup.add(wallSide1);
-
-        const wallSide2 = wallSide1.clone();
-        wallSide2.position.set(-20, 1, 0);
-        scenarioGroup.add(wallSide2);
-
-        for (let i=0; i<4; i++){
-          const contGeo = new THREE.BoxGeometry(3, 2, 2);
-          const contMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-          const cont = new THREE.Mesh(contGeo, contMat);
-          cont.position.set(
-            -10 + i*4,
-            1,
-            Math.random()*6 - 3
-          );
-          scenarioGroup.add(cont);
-        }
-
-        const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
-        scenarioGroup.add(ambLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        dirLight.position.set(10, 10, 5);
-        scenarioGroup.add(dirLight);
-      }
-
-    });
-
-    document.getElementById("comunidadBtn").addEventListener("click", () => {
-  window.location.href = "comunidad.html";
-    });
-
-  </script>
+  <!-- Módulo principal -->
+  <script type="module" src="./mainGame.js"></script>
 </body>
 </html>
