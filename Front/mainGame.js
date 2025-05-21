@@ -271,8 +271,39 @@ function loadCurrentLevel() {
 
   } else if (selectedLevel === "Base Militar") {
     loadBaseMilitar();
-  } else {
+    const base = new GLTFLoader();
+          base.load(
+          "./Assets1/Base_M.gltf", function (model) {
+            console.log(model);
+            const obj = model.scene;
+            obj.scale.set(9.0, 9.0, 9.0);
+            obj.position.set(0, 0, 0);
+            scene.add(obj);
+          }
+        );
+  } else {//Ciudad tenebrosa uuuuuuuuu
     loadCiudadEnRuinas();
+    const city = new GLTFLoader();
+          city.load(
+          "./Assets2/City.gltf", function (model) {
+            console.log(model);
+            const obj = model.scene;
+            obj.scale.set(3.0, 3.0, 3.0);
+            obj.position.set(0, -0.5, 0);
+            scene.add(obj);
+          }
+        );
+    
+         const klle = new GLTFLoader();
+          klle.load(
+          "./Assets2/Calle.gltf", function (model) {
+            console.log(model);
+            const obj = model.scene;
+            obj.scale.set(3.0, 3.0, 3.0);
+            obj.position.set(0, -0.5, 0);
+            scene.add(obj);
+          }
+        );
   }
 
   scene.add(scenarioGroup);
@@ -312,7 +343,7 @@ function loadCiudadEnRuinas() {
   dirLight.position.set(10, 10, 5);
   scenarioGroup.add(dirLight);
 
-  for (let i = 0; i < 6; i++) {
+  /*for (let i = 0; i < 6; i++) {
     const h = Math.random() * 5 + 5;
     const building = new THREE.Mesh(
       new THREE.BoxGeometry(3, h, 3),
@@ -320,7 +351,7 @@ function loadCiudadEnRuinas() {
     );
     building.position.set((Math.random() - 0.5) * 25, h / 2, (Math.random() - 0.5) * 25);
     scenarioGroup.add(building);
-  }
+  }*/
 }
 
 function loadGranjaTenebrosa() {
@@ -364,7 +395,7 @@ function loadBaseMilitar() {
   );
   ground.rotation.x = -Math.PI / 2;
   scenarioGroup.add(ground);
-
+  /*
   const wallGeo = new THREE.BoxGeometry(40, 2, 0.5);
   const wallMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
 
@@ -383,7 +414,7 @@ function loadBaseMilitar() {
     );
     cont.position.set(-10 + i * 4, 1, Math.random() * 6 - 3);
     scenarioGroup.add(cont);
-  }
+  }*/
 
   scenarioGroup.add(new THREE.AmbientLight(0xffffff, 0.3));
   const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
